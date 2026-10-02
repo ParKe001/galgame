@@ -1,6 +1,7 @@
 /* ================= 游戏引擎 ================= */
 const $ = id => document.getElementById(id);
 const elTitle = $('titleScreen'), elName = $('nameScreen'), elGame = $('gameScreen'), elEnd = $('endScreen');
+const elHeroineWrap = $('heroineWrap'), elSpriteWrap = $('spriteWrap');
 const elBg = $('bg'), elBgFx = $('bgFx'), elBox = $('dialogBox'), elText = $('text');
 const elSpeaker = $('speaker'), elNext = $('nextInd'), elChoices = $('choices');
 const elAffFill = $('affFill'), elAffNum = $('affNum'), elPop = $('affPop');
@@ -26,8 +27,8 @@ function updateAff(delta){
   elAffFill.style.width = Math.min(100, Math.max(0, st.aff/20*100)) + '%';
   elAffNum.textContent = st.aff;
   if(delta){
-    elPop.textContent = (delta>0?'+':'') + delta + ' ❤';
-    elPop.style.color = delta>0 ? '#ff9ecb' : '#8fb8ff';
+    elPop.textContent = (delta>0?'+':'') + delta + ' 好 感';
+    elPop.style.color = '#fff';
     elPop.classList.remove('show'); void elPop.offsetWidth; elPop.classList.add('show');
     clearTimeout(elPop._t); elPop._t = setTimeout(()=>elPop.classList.remove('show'),900);
   }
@@ -53,9 +54,9 @@ function say(node){
   const who = node.who;
   elSpeaker.textContent = (who==='me' ? st.name : who==='ynn' ? 'ynn' : '');
   elSpeaker.style.display = (who==='me'||who==='ynn') ? 'block' : 'none';
-  elSpeaker.style.background = who==='ynn'
-    ? 'linear-gradient(90deg,#ff5f9e,#ffa5cc)'
-    : 'linear-gradient(90deg,#2b5cff,#79a9ff)';
+  // 谁在说话，谁的立绘就亮起来
+  elHeroineWrap.style.opacity = (who==='ynn' || who==='narr') ? 1 : 0.28;
+  elSpriteWrap.style.opacity  = (who==='me') ? 1 : 0.28;
   elBox.classList.toggle('narr', !(who==='me'||who==='ynn'));
   elBox.classList.add('on');
 
