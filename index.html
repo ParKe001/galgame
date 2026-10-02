@@ -65,6 +65,7 @@ button{font-family:inherit}
 #menuBar{display:flex;gap:8px;pointer-events:auto}
 #menuBar button{font-size:10.5px;letter-spacing:.24em;color:#fff;text-indent:.24em;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.34);border-radius:0;padding:7px 13px;cursor:pointer;transition:.3s;backdrop-filter:blur(4px)}
 #menuBar button:active{background:rgba(255,255,255,.24)}
+#btnAuto.on{background:#fff;color:#000;border-color:#fff}
 #affPop{position:absolute;top:82px;right:22px;font-size:17px;font-weight:400;letter-spacing:.16em;opacity:0;pointer-events:none;transition:.5s;color:#fff;text-shadow:0 0 16px rgba(0,0,0,.9);z-index:30}
 #affPop.show{opacity:1;transform:translateY(-14px)}
 #dialogBox{position:absolute;left:4%;right:4%;bottom:3.5%;min-height:23vh;padding:34px 34px 32px;border-radius:0;z-index:25;cursor:pointer;background:linear-gradient(180deg,rgba(0,0,0,.42),rgba(0,0,0,.72));border:0;border-top:1px solid rgba(255,255,255,.28);border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);opacity:0;transition:opacity .4s}
@@ -120,6 +121,7 @@ button{font-family:inherit}
       <div class="affTop">好 感 度 <span id="affNum">0</span></div>
       <div id="affBar"><div id="affFill"></div></div>
       <div id="menuBar">
+        <button id="btnAuto">自动</button>
         <button id="btnSave">存档</button>
         <button id="btnLoad">读档</button>
         <button id="btnTitle">标题</button>
