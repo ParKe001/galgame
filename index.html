@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>星见丘 · 与你共度的四季</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  color:#fff;user-select:none;-webkit-user-select:none}
+img{-webkit-user-drag:none}
+.screen{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:80}
+.screen.on{display:flex}
+
+/* 开场黑屏 */
+#titleScreen{background:radial-gradient(circle at 50% 45%,#0a0f1c 0%,#000 70%)}
+#startBtn{font-size:clamp(46px,13.5vw,104px);font-weight:900;letter-spacing:.14em;
+  padding:.1em .1em .1em .24em;cursor:pointer;color:#fff;
+  text-shadow:0 0 10px rgba(255,255,255,.45),0 0 40px rgba(110,170,255,.6),0 0 90px rgba(60,120,255,.35);
+  animation:breathe 2.6s ease-in-out infinite;transition:transform .25s}
+#startBtn:active{transform:scale(.94)}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.06);opacity:1}}
+.tip{margin-top:26px;font-size:13px;letter-spacing:.32em;color:rgba(190,215,255,.55);animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:.9}}
+#continueBtn{margin-top:18px;font-size:14px;letter-spacing:.2em;color:rgba(255,255,255,.75);
+  border:1px solid rgba(140,180,255,.45);border-radius:999px;padding:10px 26px;
+  background:rgba(20,30,55,.5);cursor:pointer}
+#continueBtn:active{background:rgba(60,110,220,.45)}
+
+/* 起名 */
+#nameScreen{background:radial-gradient(circle at 50% 40%,#0a1020 0%,#000 72%)}
+.panel{width:min(520px,86vw);text-align:center}
+.panel h2{margin:0 0 6px;font-size:clamp(20px,5.4vw,26px);letter-spacing:.16em}
+.panel p{margin:0 0 30px;font-size:13px;color:rgba(180,205,255,.6);letter-spacing:.1em}
+#nameInput{width:100%;padding:16px 18px;font-size:19px;text-align:center;letter-spacing:.16em;
+  color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(150,190,255,.45);
+  border-radius:12px;outline:none}
+#nameInput:focus{border-color:#8fbcff;box-shadow:0 0 24px rgba(90,150,255,.45)}
+#okBtn{margin-top:22px;width:100%;padding:16px;font-size:17px;letter-spacing:.3em;
+  color:#fff;background:linear-gradient(90deg,#2b5cff,#7aa8ff);border:0;border-radius:12px;
+  cursor:pointer;box-shadow:0 10px 30px rgba(50,100,255,.35)}
+
+/* 游戏 */
+#gameScreen{position:fixed;inset:0;display:none;z-index:60}
+#gameScreen.on{display:block}
+#bg{position:absolute;inset:0;background:#0b1020 url("images/bg.jpg") center/cover no-repeat;
+  filter:brightness(1.02);transition:filter 1.1s ease}
+.bg-day{filter:brightness(1.03) saturate(1.06)!important}
+.bg-dusk{filter:sepia(.3) hue-rotate(-18deg) saturate(1.35) brightness(.85) contrast(1.05)!important}
+.bg-night{filter:brightness(.4) saturate(.72) hue-rotate(195deg) contrast(1.1)!important}
+.bg-rain{filter:brightness(.6) saturate(.5) hue-rotate(178deg) contrast(1.05)!important}
+.bg-indoor{filter:brightness(.95) saturate(.95) sepia(.14)!important}
+.bg-star{filter:brightness(.32) saturate(.7) hue-rotate(205deg) contrast(1.18)!important}
+#bgFx{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .8s}
+#bgFx.rain{opacity:1;background-image:repeating-linear-gradient(102deg,rgba(220,235,255,.20) 0 1px,transparent 1px 26px);
+  background-size:200px 200px;animation:rainMove .55s linear infinite}
+@keyframes rainMove{from{background-position:0 0}to{background-position:-70px 400px}}
+#bgFx.stars{opacity:1;animation:twk 3.6s ease-in-out infinite;
+  background-image:radial-gradient(1.6px 1.6px at 12% 18%,#fff,transparent),
+    radial-gradient(1.4px 1.4px at 30% 9%,#dfe9ff,transparent),
+    radial-gradient(1.8px 1.8px at 52% 22%,#fff,transparent),
+    radial-gradient(1.3px 1.3px at 71% 13%,#cfe0ff,transparent),
+    radial-gradient(1.7px 1.7px at 86% 27%,#fff,transparent),
+    radial-gradient(1.2px 1.2px at 63% 40%,#e8f0ff,transparent),
+    radial-gradient(1.5px 1.5px at 22% 38%,#fff,transparent),
+    radial-gradient(1.3px 1.3px at 91% 52%,#dbe7ff,transparent)}
+@keyframes twk{0%,100%{opacity:.55}50%{opacity:1}}
+#vig{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 42%,transparent 40%,rgba(0,0,0,.5) 100%)}
+
+/* 立绘 */
+#spriteWrap{position:absolute;right:0;bottom:0;height:86vh;display:flex;align-items:flex-end;
+  justify-content:flex-end;padding-right:1vw;pointer-events:none}
+#sprite{max-height:86vh;max-width:64vw;object-fit:contain;
+  -webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);
+  filter:drop-shadow(0 18px 28px rgba(0,0,0,.65)) contrast(1.03);
+  animation:floaty 5.5s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@media(max-width:520px){#sprite{max-width:82vw}#spriteWrap{height:68vh}}
+
+/* HUD */
+#hud{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;
+  align-items:flex-start;gap:10px;pointer-events:none;z-index:20}
+#chapterTag{font-size:12px;letter-spacing:.2em;color:rgba(210,225,255,.85);
+  background:rgba(8,14,28,.6);border:1px solid rgba(140,180,255,.35);border-radius:999px;padding:7px 15px}
+.affBox{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.affTop{font-size:12px;letter-spacing:.1em;color:rgba(255,200,220,.95)}
+#affBar{width:132px;height:8px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden;
+  border:1px solid rgba(255,255,255,.22)}
+#affFill{height:100%;width:0%;border-radius:99px;
+  background:linear-gradient(90deg,#ff7bac,#ff9ecb,#8fb8ff,#5c7dff);transition:width .7s cubic-bezier(.2,.9,.25,1)}
+#menuBar{display:flex;gap:8px;pointer-events:auto}
+#menuBar button{font-size:11.5px;letter-spacing:.12em;color:rgba(220,232,255,.9);
+  background:rgba(10,18,34,.72);border:1px solid rgba(140,180,255,.35);border-radius:999px;
+  padding:6px 12px;cursor:pointer}
+#affPop{position:absolute;top:78px;right:22px;font-size:20px;font-weight:800;opacity:0;
+  pointer-events:none;transition:.4s;text-shadow:0 0 14px currentColor;z-index:30}
+#affPop.show{opacity:1;transform:translateY(-16px)}
+
+/* 对话框 */
+#dialogBox{position:absolute;left:3%;right:3%;bottom:3%;min-height:24vh;
+  padding:30px 26px 38px;border-radius:16px;z-index:25;cursor:pointer;
+  background:linear-gradient(180deg,rgba(10,15,28,.86),rgba(5,8,16,.95));
+  border:1px solid rgba(150,190,255,.34);
+  box-shadow:0 0 44px rgba(0,0,0,.75),inset 0 0 40px rgba(80,130,255,.07);
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);opacity:0;transition:opacity .35s}
+#dialogBox.on{opacity:1}
+#dialogBox.narr{background:linear-gradient(180deg,rgba(8,10,20,.78),rgba(3,5,12,.92))}
+#speaker{position:absolute;top:-17px;left:22px;padding:7px 20px;border-radius:999px;
+  font-size:14px;font-weight:800;letter-spacing:.16em;background:linear-gradient(90deg,#2b5cff,#79a9ff);
+  box-shadow:0 6px 22px rgba(40,90,240,.5);display:none}
+#text{font-size:clamp(15px,4.2vw,20px);line-height:1.92;letter-spacing:.045em;white-space:pre-wrap}
+#nextInd{position:absolute;right:20px;bottom:12px;font-size:13px;color:#9cc4ff;opacity:0;animation:blink 1.4s infinite}
+
+/* 选项 */
+#choices{position:absolute;left:0;right:0;bottom:31vh;display:none;flex-direction:column;
+  align-items:center;gap:12px;z-index:40;padding:0 16px}
+.choice{width:min(700px,92vw);padding:16px 20px;text-align:left;font-size:clamp(14px,3.9vw,17px);
+  letter-spacing:.05em;color:#eaf1ff;cursor:pointer;border-radius:11px;
+  background:rgba(12,19,36,.9);border:1px solid rgba(140,180,255,.5);
+  box-shadow:0 8px 26px rgba(0,0,0,.55);transition:.22s;backdrop-filter:blur(4px)}
+.choice:active{background:rgba(60,110,220,.55);border-color:#a8caff;transform:translateX(6px)}
+
+/* 章节卡 */
+#chapterCard{position:absolute;inset:0;background:#000;display:none;flex-direction:column;
+  align-items:center;justify-content:center;z-index:70;text-align:center;padding:0 24px}
+#chapterCard.on{display:flex;animation:fadeIn .8s}
+#ccTitle{font-size:clamp(30px,8.4vw,52px);font-weight:900;letter-spacing:.2em;
+  text-shadow:0 0 30px rgba(120,175,255,.7)}
+#ccSub{margin-top:16px;font-size:clamp(12px,3.6vw,15px);letter-spacing:.3em;color:rgba(180,205,255,.7)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+#toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:90;
+  padding:14px 30px;border-radius:10px;background:rgba(6,12,26,.92);
+  border:1px solid rgba(150,190,255,.5);font-size:14px;letter-spacing:.18em;
+  opacity:0;pointer-events:none;transition:.3s}
+#toast.on{opacity:1}
+
+/* 结局 */
+#endScreen{background:radial-gradient(circle at 50% 40%,#0b1428 0%,#000 75%);padding:0 24px;text-align:center}
+#endKind{font-size:13px;letter-spacing:.5em;color:rgba(150,185,255,.8)}
+#endTitle{margin:12px 0 20px;font-size:clamp(26px,7.4vw,44px);font-weight:900;letter-spacing:.14em;
+  text-shadow:0 0 34px rgba(120,175,255,.55)}
+#endText{width:min(660px,92vw);font-size:clamp(14px,4vw,17px);line-height:2.05;
+  color:rgba(226,236,255,.9);letter-spacing:.04em;white-space:pre-wrap}
+#endScore{margin-top:22px;font-size:13px;letter-spacing:.2em;color:rgba(255,190,220,.85)}
+#endBtns{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+#endBtns button{padding:13px 28px;font-size:14.5px;letter-spacing:.2em;border-radius:999px;
+  color:#fff;cursor:pointer;background:rgba(20,32,58,.85);border:1px solid rgba(150,190,255,.5)}
+</style>
+</head>
+<body>
+
+<div id="titleScreen" class="screen on">
+  <div id="startBtn">开始攻略</div>
+  <div class="tip">点 击 开 始</div>
+  <button id="continueBtn" style="display:none">继续攻略</button>
+</div>
+
+<div id="nameScreen" class="screen">
+  <div class="panel">
+    <h2>你 的 名 字</h2>
+    <p>请输入男主角的名字</p>
+    <input id="nameInput" maxlength="8" value="悠真" placeholder="悠真">
+    <button id="okBtn">确 定</button>
+  </div>
+</div>
+
+<div id="gameScreen">
+  <div id="bg" class="bg-day"></div>
+  <div id="bgFx"></div>
+  <div id="vig"></div>
+  <div id="spriteWrap"><img id="sprite" src="images/protagonist.png" alt=""></div>
+
+  <div id="hud">
+    <div id="chapterTag">序章</div>
+    <div class="affBox">
+      <div class="affTop">❤ 好感度 <span id="affNum">0</span></div>
+      <div id="affBar"><div id="affFill"></div></div>
+      <div id="menuBar">
+        <button id="btnSave">存档</button>
+        <button id="btnLoad">读档</button>
+        <button id="btnTitle">标题</button>
+      </div>
+    </div>
+  </div>
+  <div id="affPop"></div>
+
+  <div id="dialogBox">
+    <div id="speaker"></div>
+    <div id="text"></div>
+    <div id="nextInd">▼</div>
+  </div>
+
+  <div id="choices"></div>
+
+  <div id="chapterCard">
+    <div id="ccTitle"></div>
+    <div id="ccSub"></div>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<div id="endScreen" class="screen">
+  <div id="endKind">TRUE END</div>
+  <div id="endTitle"></div>
+  <div id="endText"></div>
+  <div id="endScore"></div>
+  <div id="endBtns">
+    <button id="btnAgain">重新攻略</button>
+    <button id="btnBackTitle">回到标题</button>
+  </div>
+</div>
+
+<script src="story.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
