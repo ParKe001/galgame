@@ -24,7 +24,7 @@ function toast(msg){
   clearTimeout(elToast._t); elToast._t = setTimeout(()=>elToast.classList.remove('on'),1100);
 }
 function updateAff(delta){
-  elAffFill.style.width = Math.min(100, Math.max(0, st.aff/20*100)) + '%';
+  elAffFill.style.width = Math.min(100, Math.max(0, st.aff/40*100)) + '%';
   elAffNum.textContent = st.aff;
   if(delta){
     elPop.textContent = (delta>0?'+':'') + delta + ' 好 感';
