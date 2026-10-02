@@ -6,9 +6,11 @@ const elSpeaker = $('speaker'), elNext = $('nextInd'), elChoices = $('choices');
 const elAffFill = $('affFill'), elAffNum = $('affNum'), elPop = $('affPop');
 const elCC = $('chapterCard'), elCCT = $('ccTitle'), elCCS = $('ccSub'), elToast = $('toast');
 const elTag = $('chapterTag');
+const elBtnAuto = $('btnAuto');
 const SAVE_KEY = 'galgame_save_v1';
-const st = { name:'悠真', aff:0, i:0, chapter:'序章' };
+const st = { name:'悠真', aff:0, i:0, chapter:'序章', flags:{} };
 let LABELS = {}, typing=false, typeTimer=null, fullText='', tick=0;
+let autoOn = false, autoTimer = null;
 SCRIPT.forEach((n,i)=>{ if(n.type==='label') LABELS[n.name]=i; });
 
 const sub = t => String(t||'').replace(/\{name\}/g, st.name);
@@ -63,6 +65,27 @@ function finishType(){
   clearInterval(typeTimer); typing = false;
   elText.textContent = fullText;
   elNext.style.opacity = 1;
+  scheduleAuto();
+}
+function scheduleAuto(){
+  clearTimeout(autoTimer);
+  if(!autoOn) return;
+  autoTimer = setTimeout(()=>{
+    if(!autoOn) return;
+    const n = SCRIPT[st.i];
+    if(n && n.type === 'choice') return;
+    if(n && n.type === 'say'){ st.i++; run(); }
+  }, 1100);
+}
+function setAuto(v){
+  autoOn = v;
+  elBtnAuto.classList.toggle('on', autoOn);
+  if(autoOn){
+    if(typing) return;
+    scheduleAuto();
+  } else {
+    clearTimeout(autoTimer);
+  }
 }
 
 function chapterCard(title, sub2, cb){
@@ -73,6 +96,7 @@ function chapterCard(title, sub2, cb){
 }
 
 function ask(node){
+  clearTimeout(autoTimer);
   elChoices.innerHTML = '';
   elChoices.style.display = 'flex';
   node.options.forEach(o=>{
@@ -83,26 +107,52 @@ function ask(node){
       ev.stopPropagation();
       elChoices.style.display = 'none'; elChoices.innerHTML = '';
       if(o.aff){ st.aff = Math.max(0, st.aff + o.aff); updateAff(o.aff); }
+      if(o.flag){ st.flags = st.flags || {}; st.flags[o.flag] = true; }
       st.i = LABELS[o.to]; run();
+      if(autoOn && !typing) scheduleAuto();
     };
     elChoices.appendChild(b);
   });
 }
 
 function run(){
-  if(st.i >= SCRIPT.length) return;
+  if(st.i >= SCRIPT.length){ showEnding({kind:'normal', key:'fallback', title:'四季尽头', text:'故事在这里停下了。\n但星见丘的四季，还在继续。'}); return; }
   const n = SCRIPT[st.i];
   switch(n.type){
-    case 'chapter': doSave(true); chapterCard(n.title, n.sub, ()=>{ st.i++; run(); }); break;
+    case 'chapter': doSave(true); chapterCard(n.title, n.sub, ()=>{ st.i++; run(); if(autoOn && !typing) scheduleAuto(); }); break;
     case 'bg': setBg(n.cls, n.fx); st.i++; run(); break;
     case 'say': doSave(true); say(n); break;
     case 'choice': ask(n); break;
     case 'label': st.i++; run(); break;
-    case 'jump': st.i = LABELS[n.to]; run(); break;
+    case 'jump': {
+      if(LABELS[n.to] === undefined){ st.i++; run(); break; }
+      st.i = LABELS[n.to]; run(); break;
+    }
+    case 'require': {
+      // 精确 flag 组合（AND），优先命中特殊结局
+      let target = null;
+      for(const b of n.branches){
+        const need = b.flags || [];
+        let ok = true;
+        for(const f of need){ if(!(st.flags && st.flags[f])){ ok = false; break; } }
+        if(ok){ target = b.to; break; }
+      }
+      if(target !== null && LABELS[target] !== undefined){ st.i = LABELS[target]; run(); }
+      else { st.i++; run(); }
+      break;
+    }
     case 'check': {
       let target = null;
-      for(const b of n.branches){ if(st.aff >= b.min){ target = b.to; break; } }
-      st.i = LABELS[target]; run(); break;
+      for(const b of n.branches){
+        if(st.aff < b.min) continue;
+        const need = b.flags || [];
+        let ok = true;
+        for(const f of need){ if(!(st.flags && st.flags[f])){ ok = false; break; } }
+        if(ok){ target = b.to; break; }
+      }
+      if(target !== null && LABELS[target] !== undefined){ st.i = LABELS[target]; run(); }
+      else { showEnding({kind:'normal', title:'四季尽头', text:'故事在这里停下了。\\n但星见丘的四季，还在继续。'}); }
+      break;
     }
     case 'end': showEnding(n); break;
     default: st.i++; run();
@@ -132,10 +182,12 @@ function applySave(s){
 }
 
 function showEnding(n){
-  $('endKind').textContent = n.kind;
+  clearTimeout(autoTimer); setAuto(false);
+  const K = {perfect:'真 结 局', true:'好 结 局', good:'普 通 结 局', normal:'平 淡 结 局', bad:'遗 憾 结 局'};
+  $('endKind').textContent = K[n.kind] || n.kind;
   $('endTitle').textContent = n.title;
   $('endText').textContent = sub(n.text);
-  $('endScore').textContent = (n.affText||'好感度：') + ' ' + st.aff;
+  $('endScore').textContent = (n.affText||'好 感 度 ：') + ' ' + st.aff;
   try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
   elBox.classList.remove('on');
   show(elEnd);
@@ -153,6 +205,7 @@ function startGame(){
 }
 function backToTitle(){
   clearInterval(typeTimer); typing=false;
+  clearTimeout(autoTimer); setAuto(false);
   elChoices.style.display='none'; elBox.classList.remove('on');
   show(elTitle);
   $('continueBtn').style.display = loadSave() ? 'block' : 'none';
@@ -170,9 +223,10 @@ document.addEventListener('keydown', e=>{
   if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); next(); }
 });
 
-$('btnSave').onclick = ()=>{ clearInterval(typeTimer); typing=false; elText.textContent=fullText; elNext.style.opacity=1; doSave(false); };
+$('btnSave').onclick = ()=>{ clearInterval(typeTimer); typing=false; elText.textContent=fullText; elNext.style.opacity=1; doSave(false); if(autoOn) scheduleAuto(); };
 $('btnLoad').onclick = ()=>{ const s = loadSave(); if(s){ applySave(s); toast('已读档'); } else toast('没有存档'); };
 $('btnTitle').onclick = backToTitle;
+$('btnAuto').onclick = ev=>{ ev.stopPropagation(); setAuto(!autoOn); toast(autoOn ? '自动对话：开' : '自动对话：关'); };
 $('btnAgain').onclick = ()=>{ st.i = 0; st.aff = 0; updateAff(0); setBg('bg-day',''); show(elName); setTimeout(()=>$('nameInput').focus(),260); };
 $('btnBackTitle').onclick = backToTitle;
 $('sprite').onerror = ()=>{ console.warn('立绘图片未找到：images/protagonist.png'); };
