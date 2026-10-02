@@ -3,45 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>星见丘 · 与你共度的四季</title>
+<title>星见丘</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:#000;overflow:hidden;
-  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
-  color:#fff;user-select:none;-webkit-user-select:none}
+  font-family:"Songti SC","STSong","Noto Serif SC","Source Han Serif SC","Hiragino Mincho ProN","SimSun",serif;
+  color:#fff;user-select:none;-webkit-user-select:none;-webkit-font-smoothing:antialiased}
 img{-webkit-user-drag:none}
+button{font-family:inherit}
 .screen{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:80}
 .screen.on{display:flex}
 
-/* 开场黑屏 */
-#titleScreen{background:radial-gradient(circle at 50% 45%,#0a0f1c 0%,#000 70%)}
-#startBtn{font-size:clamp(46px,13.5vw,104px);font-weight:900;letter-spacing:.14em;
-  padding:.1em .1em .1em .24em;cursor:pointer;color:#fff;
-  text-shadow:0 0 10px rgba(255,255,255,.45),0 0 40px rgba(110,170,255,.6),0 0 90px rgba(60,120,255,.35);
-  animation:breathe 2.6s ease-in-out infinite;transition:transform .25s}
-#startBtn:active{transform:scale(.94)}
-@keyframes breathe{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.06);opacity:1}}
-.tip{margin-top:26px;font-size:13px;letter-spacing:.32em;color:rgba(190,215,255,.55);animation:blink 1.8s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:.25}50%{opacity:.9}}
-#continueBtn{margin-top:18px;font-size:14px;letter-spacing:.2em;color:rgba(255,255,255,.75);
-  border:1px solid rgba(140,180,255,.45);border-radius:999px;padding:10px 26px;
-  background:rgba(20,30,55,.5);cursor:pointer}
-#continueBtn:active{background:rgba(60,110,220,.45)}
+/* ---------- 开场 ---------- */
+#titleScreen{background:#000}
+#startBtn{font-size:clamp(42px,12vw,92px);font-weight:400;letter-spacing:.5em;
+  padding:.2em .1em .2em .6em;cursor:pointer;color:#fff;
+  text-shadow:0 0 30px rgba(255,255,255,.35);animation:breathe 3.4s ease-in-out infinite;
+  transition:opacity .4s}
+#startBtn:active{opacity:.6}
+@keyframes breathe{0%,100%{opacity:.78}50%{opacity:1}}
+.tip{margin-top:38px;font-size:11px;letter-spacing:.7em;color:rgba(255,255,255,.4);
+  animation:blink 2.6s ease-in-out infinite;text-indent:.7em}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:.7}}
+#continueBtn{margin-top:34px;font-size:12px;letter-spacing:.4em;color:#fff;
+  border:1px solid rgba(255,255,255,.35);border-radius:0;padding:12px 34px;
+  background:rgba(255,255,255,.06);cursor:pointer;transition:.35s}
+#continueBtn:active{background:rgba(255,255,255,.2)}
 
-/* 起名 */
-#nameScreen{background:radial-gradient(circle at 50% 40%,#0a1020 0%,#000 72%)}
-.panel{width:min(520px,86vw);text-align:center}
-.panel h2{margin:0 0 6px;font-size:clamp(20px,5.4vw,26px);letter-spacing:.16em}
-.panel p{margin:0 0 30px;font-size:13px;color:rgba(180,205,255,.6);letter-spacing:.1em}
-#nameInput{width:100%;padding:16px 18px;font-size:19px;text-align:center;letter-spacing:.16em;
-  color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(150,190,255,.45);
-  border-radius:12px;outline:none}
-#nameInput:focus{border-color:#8fbcff;box-shadow:0 0 24px rgba(90,150,255,.45)}
-#okBtn{margin-top:22px;width:100%;padding:16px;font-size:17px;letter-spacing:.3em;
-  color:#fff;background:linear-gradient(90deg,#2b5cff,#7aa8ff);border:0;border-radius:12px;
-  cursor:pointer;box-shadow:0 10px 30px rgba(50,100,255,.35)}
+/* ---------- 起名 ---------- */
+#nameScreen{background:#000}
+.panel{width:min(430px,84vw);text-align:center}
+.panel h2{margin:0 0 14px;font-size:clamp(17px,4.6vw,21px);font-weight:400;letter-spacing:.45em;
+  color:#fff;text-indent:.45em}
+.panel p{margin:0 0 44px;font-size:11px;color:rgba(255,255,255,.42);letter-spacing:.28em;text-indent:.28em}
+#nameInput{width:100%;padding:16px 8px;font-size:19px;text-align:center;letter-spacing:.3em;
+  color:#fff;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.35);
+  border-radius:0;outline:none;font-family:inherit;transition:border-color .4s}
+#nameInput::placeholder{color:rgba(255,255,255,.22)}
+#nameInput:focus{border-bottom-color:#fff}
+#okBtn{margin-top:46px;width:100%;padding:15px;font-size:13px;letter-spacing:.5em;
+  color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.4);
+  border-radius:0;cursor:pointer;transition:.35s;text-indent:.5em}
+#okBtn:active{background:rgba(255,255,255,.22)}
 
-/* 游戏 */
+/* ---------- 游戏 ---------- */
 #gameScreen{position:fixed;inset:0;display:none;z-index:60}
 #gameScreen.on{display:block}
 #bg{position:absolute;inset:0;background:#0b1020 url("images/bg.jpg") center/cover no-repeat;
@@ -53,102 +58,119 @@ img{-webkit-user-drag:none}
 .bg-indoor{filter:brightness(.95) saturate(.95) sepia(.14)!important}
 .bg-star{filter:brightness(.32) saturate(.7) hue-rotate(205deg) contrast(1.18)!important}
 #bgFx{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .8s}
-#bgFx.rain{opacity:1;background-image:repeating-linear-gradient(102deg,rgba(220,235,255,.20) 0 1px,transparent 1px 26px);
+#bgFx.rain{opacity:1;background-image:repeating-linear-gradient(102deg,rgba(255,255,255,.16) 0 1px,transparent 1px 26px);
   background-size:200px 200px;animation:rainMove .55s linear infinite}
 @keyframes rainMove{from{background-position:0 0}to{background-position:-70px 400px}}
 #bgFx.stars{opacity:1;animation:twk 3.6s ease-in-out infinite;
   background-image:radial-gradient(1.6px 1.6px at 12% 18%,#fff,transparent),
-    radial-gradient(1.4px 1.4px at 30% 9%,#dfe9ff,transparent),
+    radial-gradient(1.4px 1.4px at 30% 9%,#fff,transparent),
     radial-gradient(1.8px 1.8px at 52% 22%,#fff,transparent),
-    radial-gradient(1.3px 1.3px at 71% 13%,#cfe0ff,transparent),
+    radial-gradient(1.3px 1.3px at 71% 13%,#fff,transparent),
     radial-gradient(1.7px 1.7px at 86% 27%,#fff,transparent),
-    radial-gradient(1.2px 1.2px at 63% 40%,#e8f0ff,transparent),
+    radial-gradient(1.2px 1.2px at 63% 40%,#fff,transparent),
     radial-gradient(1.5px 1.5px at 22% 38%,#fff,transparent),
-    radial-gradient(1.3px 1.3px at 91% 52%,#dbe7ff,transparent)}
+    radial-gradient(1.3px 1.3px at 91% 52%,#fff,transparent)}
 @keyframes twk{0%,100%{opacity:.55}50%{opacity:1}}
 #vig{position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 42%,transparent 40%,rgba(0,0,0,.5) 100%)}
+  background:radial-gradient(ellipse at 50% 42%,transparent 38%,rgba(0,0,0,.55) 100%)}
 
-/* 立绘 */
-#spriteWrap{position:absolute;right:0;bottom:0;height:86vh;display:flex;align-items:flex-end;
-  justify-content:flex-end;padding-right:1vw;pointer-events:none}
-#sprite{max-height:86vh;max-width:64vw;object-fit:contain;
-  -webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);
-  mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);
-  filter:drop-shadow(0 18px 28px rgba(0,0,0,.65)) contrast(1.03);
-  animation:floaty 5.5s ease-in-out infinite}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-@media(max-width:520px){#sprite{max-width:82vw}#spriteWrap{height:68vh}}
+/* ---------- 立绘 ---------- */
+#heroineWrap{position:absolute;left:0;bottom:0;height:78vh;display:flex;align-items:flex-end;
+  justify-content:flex-start;pointer-events:none;transition:opacity .5s}
+#heroine{max-height:78vh;max-width:46vw;object-fit:contain;
+  -webkit-mask-image:linear-gradient(to bottom,#000 82%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 82%,transparent 100%);
+  filter:drop-shadow(0 14px 34px rgba(0,0,0,.75));
+  animation:floaty 6.5s ease-in-out infinite}
+#spriteWrap{position:absolute;right:0;bottom:0;height:74vh;display:flex;align-items:flex-end;
+  justify-content:flex-end;pointer-events:none;transition:opacity .5s}
+#sprite{max-height:74vh;max-width:44vw;object-fit:contain;
+  -webkit-mask-image:linear-gradient(to bottom,#000 82%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 82%,transparent 100%);
+  filter:drop-shadow(0 14px 30px rgba(0,0,0,.7));
+  animation:floaty 6s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@media(max-width:560px){
+  #heroine{max-width:52vw}#heroineWrap{height:66vh}
+  #sprite{max-width:44vw}#spriteWrap{height:62vh}
+}
 
-/* HUD */
-#hud{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;
+/* ---------- HUD ---------- */
+#hud{position:absolute;top:16px;left:20px;right:20px;display:flex;justify-content:space-between;
   align-items:flex-start;gap:10px;pointer-events:none;z-index:20}
-#chapterTag{font-size:12px;letter-spacing:.2em;color:rgba(210,225,255,.85);
-  background:rgba(8,14,28,.6);border:1px solid rgba(140,180,255,.35);border-radius:999px;padding:7px 15px}
-.affBox{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.affTop{font-size:12px;letter-spacing:.1em;color:rgba(255,200,220,.95)}
-#affBar{width:132px;height:8px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden;
-  border:1px solid rgba(255,255,255,.22)}
-#affFill{height:100%;width:0%;border-radius:99px;
-  background:linear-gradient(90deg,#ff7bac,#ff9ecb,#8fb8ff,#5c7dff);transition:width .7s cubic-bezier(.2,.9,.25,1)}
+#chapterTag{font-size:10.5px;letter-spacing:.42em;color:#fff;
+  background:transparent;border:1px solid rgba(255,255,255,.3);border-radius:0;
+  padding:7px 14px 7px 18px;backdrop-filter:blur(3px)}
+.affBox{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.affTop{font-size:10.5px;letter-spacing:.34em;color:#fff;text-shadow:0 0 12px rgba(0,0,0,.9)}
+#affBar{width:108px;height:1px;background:rgba(255,255,255,.25);overflow:hidden}
+#affFill{height:100%;width:0%;background:#fff;transition:width .8s cubic-bezier(.2,.9,.25,1)}
 #menuBar{display:flex;gap:8px;pointer-events:auto}
-#menuBar button{font-size:11.5px;letter-spacing:.12em;color:rgba(220,232,255,.9);
-  background:rgba(10,18,34,.72);border:1px solid rgba(140,180,255,.35);border-radius:999px;
-  padding:6px 12px;cursor:pointer}
-#affPop{position:absolute;top:78px;right:22px;font-size:20px;font-weight:800;opacity:0;
-  pointer-events:none;transition:.4s;text-shadow:0 0 14px currentColor;z-index:30}
-#affPop.show{opacity:1;transform:translateY(-16px)}
+#menuBar button{font-size:10.5px;letter-spacing:.24em;color:#fff;text-indent:.24em;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.34);border-radius:0;
+  padding:7px 13px;cursor:pointer;transition:.3s;backdrop-filter:blur(4px)}
+#menuBar button:active{background:rgba(255,255,255,.24)}
+#affPop{position:absolute;top:82px;right:22px;font-size:17px;font-weight:400;letter-spacing:.16em;
+  opacity:0;pointer-events:none;transition:.5s;color:#fff;
+  text-shadow:0 0 16px rgba(0,0,0,.9);z-index:30}
+#affPop.show{opacity:1;transform:translateY(-14px)}
 
-/* 对话框 */
-#dialogBox{position:absolute;left:3%;right:3%;bottom:3%;min-height:24vh;
-  padding:30px 26px 38px;border-radius:16px;z-index:25;cursor:pointer;
-  background:linear-gradient(180deg,rgba(10,15,28,.86),rgba(5,8,16,.95));
-  border:1px solid rgba(150,190,255,.34);
-  box-shadow:0 0 44px rgba(0,0,0,.75),inset 0 0 40px rgba(80,130,255,.07);
-  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);opacity:0;transition:opacity .35s}
+/* ---------- 对话框 ---------- */
+#dialogBox{position:absolute;left:4%;right:4%;bottom:3.5%;min-height:23vh;
+  padding:34px 34px 32px;border-radius:0;z-index:25;cursor:pointer;
+  background:linear-gradient(180deg,rgba(0,0,0,.42),rgba(0,0,0,.72));
+  border:0;border-top:1px solid rgba(255,255,255,.28);border-bottom:1px solid rgba(255,255,255,.1);
+  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);opacity:0;transition:opacity .4s}
 #dialogBox.on{opacity:1}
-#dialogBox.narr{background:linear-gradient(180deg,rgba(8,10,20,.78),rgba(3,5,12,.92))}
-#speaker{position:absolute;top:-17px;left:22px;padding:7px 20px;border-radius:999px;
-  font-size:14px;font-weight:800;letter-spacing:.16em;background:linear-gradient(90deg,#2b5cff,#79a9ff);
-  box-shadow:0 6px 22px rgba(40,90,240,.5);display:none}
-#text{font-size:clamp(15px,4.2vw,20px);line-height:1.92;letter-spacing:.045em;white-space:pre-wrap}
-#nextInd{position:absolute;right:20px;bottom:12px;font-size:13px;color:#9cc4ff;opacity:0;animation:blink 1.4s infinite}
+#dialogBox.narr{background:linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,.62))}
+#speaker{position:absolute;top:-11px;left:34px;padding:0 16px;font-size:12px;font-weight:400;
+  letter-spacing:.42em;color:#fff;background:#000;display:none;text-indent:.42em}
+#speaker::before{content:"";position:absolute;left:16px;bottom:7px;width:calc(100% - 32px);
+  height:1px;background:rgba(255,255,255,.35)}
+#text{font-size:clamp(15px,4.1vw,18px);line-height:2.15;letter-spacing:.09em;
+  white-space:pre-wrap;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.85)}
+#nextInd{position:absolute;right:30px;bottom:14px;font-size:10px;letter-spacing:.3em;
+  color:rgba(255,255,255,.75);opacity:0;animation:blink 1.6s infinite}
 
-/* 选项 */
-#choices{position:absolute;left:0;right:0;bottom:31vh;display:none;flex-direction:column;
-  align-items:center;gap:12px;z-index:40;padding:0 16px}
-.choice{width:min(700px,92vw);padding:16px 20px;text-align:left;font-size:clamp(14px,3.9vw,17px);
-  letter-spacing:.05em;color:#eaf1ff;cursor:pointer;border-radius:11px;
-  background:rgba(12,19,36,.9);border:1px solid rgba(140,180,255,.5);
-  box-shadow:0 8px 26px rgba(0,0,0,.55);transition:.22s;backdrop-filter:blur(4px)}
-.choice:active{background:rgba(60,110,220,.55);border-color:#a8caff;transform:translateX(6px)}
+/* ---------- 选项 ---------- */
+#choices{position:absolute;left:0;right:0;bottom:32vh;display:none;flex-direction:column;
+  align-items:center;gap:14px;z-index:40;padding:0 18px}
+.choice{width:min(580px,90vw);padding:17px 26px;text-align:left;
+  font-size:clamp(13.5px,3.7vw,15.5px);letter-spacing:.1em;line-height:1.7;
+  color:#fff;cursor:pointer;border-radius:0;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.38);
+  backdrop-filter:blur(8px);transition:.32s}
+.choice:active{background:rgba(255,255,255,.24);border-color:#fff;letter-spacing:.16em}
 
-/* 章节卡 */
+/* ---------- 章节卡 ---------- */
 #chapterCard{position:absolute;inset:0;background:#000;display:none;flex-direction:column;
   align-items:center;justify-content:center;z-index:70;text-align:center;padding:0 24px}
-#chapterCard.on{display:flex;animation:fadeIn .8s}
-#ccTitle{font-size:clamp(30px,8.4vw,52px);font-weight:900;letter-spacing:.2em;
-  text-shadow:0 0 30px rgba(120,175,255,.7)}
-#ccSub{margin-top:16px;font-size:clamp(12px,3.6vw,15px);letter-spacing:.3em;color:rgba(180,205,255,.7)}
+#chapterCard.on{display:flex;animation:fadeIn 1s}
+#ccTitle{font-size:clamp(26px,7.4vw,44px);font-weight:400;letter-spacing:.46em;
+  color:#fff;text-indent:.46em;text-shadow:0 0 40px rgba(255,255,255,.3)}
+#ccSub{margin-top:22px;font-size:clamp(10px,3.2vw,12px);letter-spacing:.5em;
+  color:rgba(255,255,255,.45);text-indent:.5em}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 #toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:90;
-  padding:14px 30px;border-radius:10px;background:rgba(6,12,26,.92);
-  border:1px solid rgba(150,190,255,.5);font-size:14px;letter-spacing:.18em;
-  opacity:0;pointer-events:none;transition:.3s}
+  padding:14px 30px;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.35);
+  font-size:12px;letter-spacing:.34em;color:#fff;text-indent:.34em;
+  opacity:0;pointer-events:none;transition:.35s;backdrop-filter:blur(6px)}
 #toast.on{opacity:1}
 
-/* 结局 */
-#endScreen{background:radial-gradient(circle at 50% 40%,#0b1428 0%,#000 75%);padding:0 24px;text-align:center}
-#endKind{font-size:13px;letter-spacing:.5em;color:rgba(150,185,255,.8)}
-#endTitle{margin:12px 0 20px;font-size:clamp(26px,7.4vw,44px);font-weight:900;letter-spacing:.14em;
-  text-shadow:0 0 34px rgba(120,175,255,.55)}
-#endText{width:min(660px,92vw);font-size:clamp(14px,4vw,17px);line-height:2.05;
-  color:rgba(226,236,255,.9);letter-spacing:.04em;white-space:pre-wrap}
-#endScore{margin-top:22px;font-size:13px;letter-spacing:.2em;color:rgba(255,190,220,.85)}
-#endBtns{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-#endBtns button{padding:13px 28px;font-size:14.5px;letter-spacing:.2em;border-radius:999px;
-  color:#fff;cursor:pointer;background:rgba(20,32,58,.85);border:1px solid rgba(150,190,255,.5)}
+/* ---------- 结局 ---------- */
+#endScreen{background:#000;padding:0 26px;text-align:center}
+#endKind{font-size:10.5px;letter-spacing:.75em;color:rgba(255,255,255,.55);text-indent:.75em}
+#endTitle{margin:20px 0 30px;font-size:clamp(23px,6.6vw,38px);font-weight:400;letter-spacing:.3em;
+  color:#fff;text-indent:.3em;text-shadow:0 0 40px rgba(255,255,255,.3)}
+#endText{width:min(600px,92vw);font-size:clamp(13.5px,3.9vw,16px);line-height:2.25;
+  color:#fff;letter-spacing:.09em;white-space:pre-wrap;text-align:left}
+#endScore{margin-top:30px;font-size:11px;letter-spacing:.36em;color:rgba(255,255,255,.45);text-indent:.36em}
+#endBtns{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+#endBtns button{padding:14px 32px;font-size:12px;letter-spacing:.34em;text-indent:.34em;border-radius:0;
+  color:#fff;cursor:pointer;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.4);transition:.32s}
+#endBtns button:active{background:rgba(255,255,255,.24)}
 </style>
 </head>
 <body>
@@ -156,7 +178,7 @@ img{-webkit-user-drag:none}
 <div id="titleScreen" class="screen on">
   <div id="startBtn">开始攻略</div>
   <div class="tip">点 击 开 始</div>
-  <button id="continueBtn" style="display:none">继续攻略</button>
+  <button id="continueBtn" style="display:none">继 续 攻 略</button>
 </div>
 
 <div id="nameScreen" class="screen">
@@ -172,12 +194,14 @@ img{-webkit-user-drag:none}
   <div id="bg" class="bg-day"></div>
   <div id="bgFx"></div>
   <div id="vig"></div>
+
+  <div id="heroineWrap"><img id="heroine" src="images/heroine.png" alt=""></div>
   <div id="spriteWrap"><img id="sprite" src="images/protagonist.png" alt=""></div>
 
   <div id="hud">
     <div id="chapterTag">序章</div>
     <div class="affBox">
-      <div class="affTop">❤ 好感度 <span id="affNum">0</span></div>
+      <div class="affTop">好 感 度 <span id="affNum">0</span></div>
       <div id="affBar"><div id="affFill"></div></div>
       <div id="menuBar">
         <button id="btnSave">存档</button>
@@ -191,7 +215,7 @@ img{-webkit-user-drag:none}
   <div id="dialogBox">
     <div id="speaker"></div>
     <div id="text"></div>
-    <div id="nextInd">▼</div>
+    <div id="nextInd">点 击 继 续</div>
   </div>
 
   <div id="choices"></div>
@@ -210,8 +234,8 @@ img{-webkit-user-drag:none}
   <div id="endText"></div>
   <div id="endScore"></div>
   <div id="endBtns">
-    <button id="btnAgain">重新攻略</button>
-    <button id="btnBackTitle">回到标题</button>
+    <button id="btnAgain">重 新 攻 略</button>
+    <button id="btnBackTitle">回 到 标 题</button>
   </div>
 </div>
 
